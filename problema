@@ -1,0 +1,86 @@
+import java.io.*;
+import java.util.Locale;
+import java.util.Scanner;
+
+public class Problema {
+
+    public static String decrypt(String linea, String clave) throws Exception{
+        clave=clave.toUpperCase();
+        linea=linea.toUpperCase();
+        if (clave.length() > 12)
+            throw new Exception("La longitud de clave no puede superar los 12 caracteres");
+        int clv =0;
+        String resultado = "";
+        for (int i = 0; i < linea.length(); i++) {
+            if (clv == clave.length()){
+                clv = 0;
+            }
+            int temp = ((int) linea.charAt(i));
+            int temp2 = (int) clave.charAt(clv);
+            if (temp >90 || temp<65){
+                resultado+=linea.charAt(clv);
+                clv++;
+                continue;
+            }
+            char result = (char) (((temp+temp2-130)%26)+65);
+            resultado+=result;
+            clv++;
+        }
+
+        return resultado;
+    }
+
+
+
+    public static void main(String[] args) {
+
+        BufferedReader br = null;
+        BufferedWriter bw = null;
+
+        try {
+            br = new BufferedReader(new FileReader("mensaje.txt"));
+            bw = new BufferedWriter(new FileWriter("mensaje_cifrado.txt"));
+
+            String linea = null;
+
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Introduce la clave para el cifrado: ");
+            String clave = sc.nextLine();
+
+
+
+            while ((linea = br.readLine()) != null) {
+                StringBuilder sb = new StringBuilder(linea.length());
+
+
+                System.out.println(linea);
+                bw.write(decrypt(linea, clave)); // Escribe la cadena de caracteres en el fichero
+                bw.newLine(); // escribe nueva línea en el fichero
+
+            }
+            System.out.println("El mensaje ha sido cifrado correctamente");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.getMessage();
+        } finally {
+            if (br != null)
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if (bw != null)
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+
+    }
+
+}
